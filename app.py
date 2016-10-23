@@ -84,7 +84,7 @@ def get_request_for_courses():
 
     isDetailed = request.args.get("isDetailed")
     if isDetailed is not None:
-        if not (isDetailed is "true" or isDetailed is "false"):
+        if not (isDetailed == "true" or isDetailed == "false"):
             raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "key 'isDetailed' is not boolean value")
         req['isDetailed'] = isDetailed
 

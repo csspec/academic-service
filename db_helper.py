@@ -22,7 +22,6 @@ def get_current_sem():
     :return: The current semester Id from the database
     """
     resp = semester_id_col.find_one()
-    print(resp)
     if resp is not None:
         return resp['current_sem']
     raise CSSException(501, constants.RESPONSE_MESSAGE_NOT_IMPLEMENTED)
@@ -65,36 +64,30 @@ def get_courses(req):
     """
     sct_filter = dict()
 
+    studentId = None
     if 'studentId' in req:
         studentId = req['studentId']
         sct_filter['studentId'] = studentId
 
+    teacherId = None
     if 'teacherId' in req:
         teacherId = req['teacherId']
         sct_filter['teacherId'] = studentId
 
     if 'semesterId' in req:
         semesterId = req['semesterId']
-        sct_filter['semesterId'] = semesterId
     else:
-        sct_filter['semesterId'] = get_current_sem()
+        semesterId = get_current_sem()
 
-    # TODO: Check if size of sct_filter is one, and then only get uniques from the collection
+    sct_filter['semesterId'] = semesterId
 
     sct_result = get_courses_by_sct_map(sct_filter)
 
-    # The final result to be returned
-    result = []
-
-    for doc in sct_result:
-        course = courses_col.find({'courseId': doc['courseId']}, {'_id': False})
-        course[0]['studentId'] = doc['studentId']
-        course[0]['teacherId'] = doc['teacherId']
-        course[0]['semesterId'] = doc['semesterId']
-
-        result.append(course[0])
-
-    return result
+    if 'isDetailed' in req:
+        if req['isDetailed'] == "true":
+            return __get_courses_with_variant_info(sct_result, studentId)
+    else:
+        return __get_courses_without_variant(sct_result)
 
 
 def get_courses_by_sct_map(query_filter):
@@ -104,4 +97,47 @@ def get_courses_by_sct_map(query_filter):
     :return:
     """
     return sct_col.find(query_filter)
+
+
+def __get_courses_with_variant_info(sct_result, studentId):
+    """
+    Gets an array of documents of courses with their relevant `studentId`, `teacherId` and `semesterId` triplet
+    :param sct_result: The Cursor instance of results returned by calling on sct map
+    :return:
+    """
+    result = []
+    if studentId is None:
+        return __get_courses_without_variant(sct_result)
+
+    courseIds = []
+
+    for doc in sct_result:
+        courseId = doc['courseId']
+        if doc['courseId'] not in courseIds:
+            courseIds.append(courseId)
+            course = courses_col.find({'courseId': courseId}, {'_id': False})
+            course[0]['studentId'] = studentId
+            course[0]['teacherId'] = doc['teacherId']
+            course[0]['semesterId'] = doc['semesterId']
+
+            result.append(course[0])
+
+    return result
+
+
+def __get_courses_without_variant(sct_result):
+    """
+    Gets an array of documents of courses without any student/teacher details
+    :param sct_result: The Cursor instance of results returned by calling on sct map
+    :return:
+    """
+    result = []
+    sct_result = sct_result.distinct("courseId")
+
+    for courseId in sct_result:
+        course = courses_col.find({'courseId': courseId}, {'_id': False})
+        #course[0]['semesterId'] = courseId['semesterId']
+        result.append(course[0])
+
+    return result
 

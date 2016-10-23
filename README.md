@@ -38,7 +38,7 @@ By default, returns all the courses being offered in the current semester in the
 | Name | Type | Description | 
 | ---- | ---- | ----------- |
 | `active` | `boolean` | If true, returns courses that are only being offered in the current semester, otherwise returns all matching courses. Defaults to true. |
-| `studentId` | `string` | Returns the courses opted in by the `userId` |
+| `studentId` | `string` | Returns the courses opted in by the `studentId` |
 | `teacherId` | `string` | Returns the courses taught by the `teacherId` |
 | `departments` | `string` | Restricts the results to only courses offered by the specified departments |
 | `semesterId` | `string` | Restricts the courses from a particular semester identified by `semester` id. Defaults to the current semester. | 
@@ -49,4 +49,4 @@ Getting course(s) by Id is just a special case of the above method. Following pa
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `id` | `string` | The `id`(s) of the courses to fetch. (Can be comma-separated list in the URL query parameter) |
-| `isDetailed` | `boolean` | If true, returns the semester-variant information about the courses. Exact `teacherId` is only returned if the `userId` field is present, else all teachers are returned. | 
+| `isDetailed` | `boolean` | If true, returns the semester-variant information about the courses. Exact `teacherId` is only returned if the `studentId` field is present, else all teachers are returned. | 
