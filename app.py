@@ -102,4 +102,4 @@ def not_found(error):
     return make_response(exception.to_json(), exception.status_code)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
