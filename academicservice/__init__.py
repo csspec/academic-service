@@ -1,7 +1,8 @@
 from flask import Flask, request, make_response, jsonify
-import constants
-from exceptions.CSSException import CSSException
-import db_helper
+
+import academicservice.constants as constants
+import academicservice.db_helper as db_helper
+from academicservice.exceptions.CSSException import CSSException
 
 app = Flask(__name__)
 
@@ -101,5 +102,5 @@ def not_found(error):
     exception = CSSException(404, constants.RESPONSE_MESSAGE_NOT_FOUND)
     return make_response(exception.to_json(), exception.status_code)
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0')

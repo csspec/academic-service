@@ -1,6 +1,7 @@
+import academicservice.constants as constants
 from pymongo import MongoClient
-import constants
-from exceptions.CSSException import CSSException
+
+from academicservice.exceptions.CSSException import CSSException
 
 client = MongoClient()
 
