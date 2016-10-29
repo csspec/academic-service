@@ -92,6 +92,74 @@ def get_request_for_courses():
     return req
 
 
+@app.route(constants.API_PATH_PREFIX + constants.API_PATH_COURSES, methods=['POST'])
+def add_course():
+    """
+    Route to add a new course
+    :return:
+    """
+    # TODO: Check authorization before adding
+    req = request.get_json()
+    data = req['data']
+    if not isinstance(data, list):
+        raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "Did you specify mime type of application/json?")
+
+    db_helper.insert_into_courses(data)
+
+    res = dict()
+    res['data'] = dict()
+    res['data']['status'] = "success"
+    return make_response(jsonify(res), 201)
+
+
+@app.route(constants.API_PATH_PREFIX + constants.API_PATH_SCT_COLLECTION, methods=['POST'])
+def add_sct():
+    """
+    The endpoint for inserting into the SCT collection
+    :return:
+    """
+    # TODO: Check authorizations before adding
+    req = request.get_json()
+    data = req['data']
+    if not isinstance(data, list):
+        raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "data is not a list.")
+
+    db_helper.insert_into_sct(data)
+
+    res = dict()
+    res['data'] = dict()
+    res['data']['status'] = "success"
+
+    return make_response(jsonify(res), 201)
+
+
+@app.route(constants.API_PATH_PREFIX + constants.API_PATH_CURRENT_SEM, methods=['POST'])
+def set_current_sem():
+    """
+    The endpoint to set the current semester
+    :return:
+    """
+    # TODO: Check the authorizations
+    req = request.get_json()
+    data = req['data']
+    if not isinstance(data, dict):
+        raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "data must be a dictionary")
+
+    if 'current-sem' not in data:
+        raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "current-sem key is missing")
+    sem = data['current-sem']
+    if len(sem) != 5:
+        raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "current-sem value is incorrect")
+
+    db_helper.set_current_sem(sem)
+
+    res = dict()
+    res['data'] = dict()
+    res['data']['status'] = "success"
+
+    return make_response(jsonify(res), 201)
+
+
 @app.errorhandler(CSSException)
 def bad_request(error):
     return make_response(error.to_json(), error.status_code)
@@ -100,6 +168,12 @@ def bad_request(error):
 @app.errorhandler(404)
 def not_found(error):
     exception = CSSException(404, constants.RESPONSE_MESSAGE_NOT_FOUND)
+    return make_response(exception.to_json(), exception.status_code)
+
+
+@app.errorhandler(400)
+def bad_request(error):
+    exception = CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST)
     return make_response(exception.to_json(), exception.status_code)
 
 # if __name__ == '__main__':

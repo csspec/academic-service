@@ -42,19 +42,41 @@ def set_current_sem(current_sem):
 def insert_into_courses(courses):
     """
     Inserts into the courses collection
-    :param courses: The array of objects to be inserted into the collection
+    :param courses: The array of objects(dictionaries) to be inserted into the collection
     :return:
     """
+    for course in courses:
+        if 'courseId' not in course:
+            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "courseId is invalid")
+        if 'offeredBy' not in course:
+            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "offeredBy is invalid")
+        if 'name' not in course:
+            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "name is invalid")
+        if 'credits' not in course:
+            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "credits is invalid")
+        if 'ltp' not in course:
+            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "ltp is invalid")
+
     courses_col.insert(courses)
 
 
-def insert_into_sct(sct):
+def insert_into_sct(scts):
     """
     Inserts into the student-to-course-to-teacher mapping collection
-    :param sct: The array of objects to be inserted
+    :param scts: The array of objects to be inserted
     :return:
     """
-    sct_col.insert(sct)
+    for sct in scts:
+        if 'courseId' not in sct:
+            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "courseId is not valid")
+        if 'studentId' not in sct:
+            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "studentId is not valid")
+        if 'teacherId' not in sct:
+            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "courseId is not valid")
+        if 'semesterId' not in sct:
+            sct['semesterId'] = get_current_sem()
+
+    sct_col.insert(scts)
 
 
 def get_courses(req):

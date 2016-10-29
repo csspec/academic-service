@@ -1,6 +1,7 @@
 API_PATH_PREFIX = "/academic"
 API_PATH_COURSES = "/courses"
 API_PATH_CURRENT_SEM = "/current-sem"
+API_PATH_SCT_COLLECTION = "/sct"
 
 RESPONSE_MESSAGE_UNAUTHORIZED = "Authentication error occurred"
 RESPONSE_MESSAGE_NOT_FOUND = "The requested resource was not found"
