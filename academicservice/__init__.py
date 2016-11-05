@@ -1,10 +1,12 @@
 from flask import Flask, request, make_response, jsonify
+from flask_cors import CORS
 
 import academicservice.constants as constants
 import academicservice.db_helper as db_helper
 from academicservice.exceptions.CSSException import CSSException
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route(constants.API_PATH_PREFIX + constants.API_PATH_COURSES, methods=['GET'])
@@ -102,7 +104,7 @@ def add_course():
     req = request.get_json()
     data = req['data']
     if not isinstance(data, list):
-        raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "Did you specify mime type of application/json?")
+        raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "data is not an array (list)")
 
     db_helper.insert_into_courses(data)
 
@@ -122,7 +124,7 @@ def add_sct():
     req = request.get_json()
     data = req['data']
     if not isinstance(data, list):
-        raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "data is not a list.")
+        raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "data is not an array (list)")
 
     db_helper.insert_into_sct(data)
 
