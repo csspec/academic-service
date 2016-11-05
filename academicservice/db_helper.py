@@ -139,11 +139,14 @@ def __get_courses_with_variant_info(sct_result, studentId):
         if doc['courseId'] not in courseIds:
             courseIds.append(courseId)
             course = courses_col.find({'courseId': courseId}, {'_id': False})
-            course[0]['studentId'] = studentId
-            course[0]['teacherId'] = doc['teacherId']
-            course[0]['semesterId'] = doc['semesterId']
 
-            result.append(course[0])
+            temp_course = dict()
+            temp_course = course[0]
+            temp_course['studentId'] = studentId
+            temp_course['teacherId'] = doc['teacherId']
+            temp_course['semesterId'] = doc['semesterId']
+
+            result.append(temp_course)
 
     return result
 
