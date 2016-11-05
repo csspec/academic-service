@@ -95,7 +95,7 @@ def get_courses(req):
     teacherId = None
     if 'teacherId' in req:
         teacherId = req['teacherId']
-        sct_filter['teacherId'] = studentId
+        sct_filter['teacherId'] = teacherId
 
     if 'semesterId' in req:
         semesterId = req['semesterId']
