@@ -52,10 +52,10 @@ def insert_into_courses(courses):
             raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "offeredBy is invalid")
         if 'name' not in course:
             raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "name is invalid")
-        if 'credits' not in course:
-            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "credits is invalid")
-        if 'ltp' not in course:
-            raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "ltp is invalid")
+        # if 'credits' not in course:
+        #     raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "credits is invalid")
+        # if 'ltp' not in course:
+        #     raise CSSException(400, constants.RESPONSE_MESSAGE_BAD_REQUEST, "ltp is invalid")
 
     courses_col.insert(courses)
 
@@ -106,11 +106,21 @@ def get_courses(req):
 
     sct_result = get_courses_by_sct_map(sct_filter)
 
+    courses = []
     if 'isDetailed' in req:
         if req['isDetailed'] == "true":
-            return __get_courses_with_variant_info(sct_result, studentId)
+            courses = __get_courses_with_variant_info(sct_result, studentId)
     else:
-        return __get_courses_without_variant(sct_result)
+        courses = __get_courses_without_variant(sct_result)
+
+    courses_final = []
+    if 'offeredBy' in req:
+        for i, val in enumerate(courses):
+            if val['offeredBy'] == req['offeredBy']:
+                courses_final.append(val)
+        return courses_final
+    else:
+        return courses
 
 
 def get_courses_by_sct_map(query_filter):
@@ -167,3 +177,23 @@ def __get_courses_without_variant(sct_result):
 
     return result
 
+
+def get_students(req):
+    """
+    Method which returns the studentIds based on certain filters
+    :param req: request dictionary
+    :return: Array of studentIds which matched
+    """
+    query = dict()
+
+    students = []
+
+    if 'courseId' in req:
+        query['courseId'] = req['courseId']
+
+    query_result = sct_col.find(query, {"_id": False})
+
+    for sct_row in query_result:
+        students.append(sct_row['studentId'])
+
+    return students

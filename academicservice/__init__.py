@@ -85,6 +85,10 @@ def get_request_for_courses():
     if courseId is not None:
         req['courseId'] = courseId
 
+    offeredBy = request.args.get("offeredBy")
+    if offeredBy is not None:
+        req['offeredBy'] = offeredBy
+
     isDetailed = request.args.get("isDetailed")
     if isDetailed is not None:
         if not (isDetailed == "true" or isDetailed == "false"):
@@ -160,6 +164,29 @@ def set_current_sem():
     res['data']['status'] = "success"
 
     return make_response(jsonify(res), 201)
+
+
+@app.route(constants.API_PATH_PREFIX + constants.API_PATH_STUDENTS, methods=['GET'])
+def get_students():
+    """
+    The endpoint to provide data about students from the sct collection
+    :return:
+    """
+    # TODO: Check the authorizations/authentications
+
+    req = dict()
+
+    courseId = request.args.get("courseId")
+    if courseId is not None:
+        req['courseId'] = courseId
+
+    studentIds = db_helper.get_students(req)
+
+    response = dict()
+    response['data'] = dict()
+    response['data']['studentIds'] = studentIds
+
+    return make_response(jsonify(response), 200)
 
 
 @app.errorhandler(CSSException)
