@@ -194,6 +194,7 @@ def get_students(req):
     query_result = sct_col.find(query, {"_id": False})
 
     for sct_row in query_result:
-        students.append(sct_row['studentId'])
+        if sct_row['studentId'] not in students:
+            students.append(sct_row['studentId'])
 
     return students
