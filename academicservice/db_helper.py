@@ -198,3 +198,28 @@ def get_students(req):
             students.append(sct_row['studentId'])
 
     return students
+
+
+def get_teachers(req):
+    """
+    The method which returns teacherIds based on certain filters
+    :param req:
+    :return:
+    """
+    query = dict()
+
+    teachers = []
+
+    if 'courseId' in req:
+        query['courseId'] = req['courseId']
+
+    if 'studentId' in req:
+        query['studentId'] = req['studentId']
+
+    query_result = sct_col.find(query, {"_id": False})
+
+    for row in query_result:
+        if row['teacherId'] not in teachers:
+            teachers.append(row['teacherId'])
+
+    return teachers

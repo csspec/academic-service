@@ -189,6 +189,33 @@ def get_students():
     return make_response(jsonify(response), 200)
 
 
+@app.route(constants.API_PATH_PREFIX + constants.API_PATH_TEACHERS, methods=['GET'])
+def get_teachers():
+    """
+    The endpoint to return list of teachers
+    :return: Array of teacherIds
+    """
+    # TODO: Check authentication/authorization
+
+    req = dict()
+
+    courseId = request.args.get("courseId")
+    if courseId is not None:
+        req['courseId'] = courseId
+
+    studentId = request.args.get("studentId")
+    if studentId is not None:
+        req['studentId'] = studentId
+
+    teacherIds = db_helper.get_teachers(req)
+
+    response = dict()
+    response['data'] = dict()
+    response['data']['teacherIds'] = teacherIds
+
+    return make_response(jsonify(response), 200)
+
+
 @app.errorhandler(CSSException)
 def bad_request(error):
     return make_response(error.to_json(), error.status_code)

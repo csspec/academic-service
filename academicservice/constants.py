@@ -3,6 +3,7 @@ API_PATH_COURSES = "/courses"
 API_PATH_CURRENT_SEM = "/current-sem"
 API_PATH_SCT_COLLECTION = "/sct"
 API_PATH_STUDENTS = "/students"
+API_PATH_TEACHERS = "/teachers"
 
 RESPONSE_MESSAGE_UNAUTHORIZED = "Authentication error occurred"
 RESPONSE_MESSAGE_NOT_FOUND = "The requested resource was not found"
