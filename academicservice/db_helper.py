@@ -150,13 +150,16 @@ def __get_courses_with_variant_info(sct_result, studentId):
             courseIds.append(courseId)
             course = courses_col.find({'courseId': courseId}, {'_id': False})
 
-            temp_course = dict()
-            temp_course = course[0]
-            temp_course['studentId'] = studentId
-            temp_course['teacherId'] = doc['teacherId']
-            temp_course['semesterId'] = doc['semesterId']
+            if course.count() != 0:
+                temp_course = dict()
+                temp_course = course[0]
+                temp_course['studentId'] = studentId
+                temp_course['teacherId'] = doc['teacherId']
+                temp_course['semesterId'] = doc['semesterId']
 
-            result.append(temp_course)
+                result.append(temp_course)
+            else:
+                result.append({'courseId': courseId, 'message': 'No info available'})
 
     return result
 
@@ -173,8 +176,10 @@ def __get_courses_without_variant(sct_result):
     for courseId in sct_result:
         course = courses_col.find({'courseId': courseId}, {'_id': False})
         #course[0]['semesterId'] = courseId['semesterId']
-        result.append(course[0])
-
+        if course.count() != 0:
+            result.append(course[0])
+        else:
+            result.append({'courseId': courseId, 'message': 'No info available'})
     return result
 
 
