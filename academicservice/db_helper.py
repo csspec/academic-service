@@ -116,8 +116,9 @@ def get_courses(req):
     courses_final = []
     if 'offeredBy' in req:
         for i, val in enumerate(courses):
-            if val['offeredBy'] == req['offeredBy']:
-                courses_final.append(val)
+            if 'offeredBy' in val:
+                if val['offeredBy'] == req['offeredBy']:
+                    courses_final.append(val)
         return courses_final
     else:
         return courses
